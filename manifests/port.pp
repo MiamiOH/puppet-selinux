@@ -39,6 +39,7 @@ define selinux::port (
   $context,
   $port,
   $protocol = undef,
+  $action = 'add',
 ) {
 
   include ::selinux
@@ -53,7 +54,7 @@ define selinux::port (
   }
 
   exec { $port_exec_command:
-    command => "semanage port -a -t ${context} ${protocol_switch}${port}",
+    command => "semanage port --${action} -t ${context} ${protocol_switch}${port}",
     unless  => "semanage port -l|grep \"^${context}.*${protocol}.*${port}\"|grep -w ${port}",
     path    => '/bin:/sbin:/usr/bin:/usr/sbin',
     require => Class['selinux::package'],
